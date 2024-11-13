@@ -1,0 +1,46 @@
+---
+services:
+  database:
+    image: percona/percona-server:8.0.39-30.1-multi
+    ports:
+      - 3306:3306
+    container_name: database
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - PERCONA_TELEMETRY_DISABLE=1
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+    networks:
+      - typo3
+    volumes:
+      - ./.docker/database/mysql.cnf:/etc/my.cnf.d/mysql.cnf:ro
+      - database:/var/lib/mysql:rw
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx
+    volumes:
+      - .:/var/www/html:ro
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    environment:
+      - TYPO3_CONTEXT=Development
+    ports:
+      - 80:80
+    networks:
+      - typo3
+  php:
+    build:
+      context: ./.docker/php/
+    container_name: php
+    environment:
+      - TYPO3_CONTEXT=Development
+    volumes:
+      - .:/var/www/html
+    networks:
+      - typo3
+
+volumes:
+  database: {}
+
+networks:
+  typo3: {}
