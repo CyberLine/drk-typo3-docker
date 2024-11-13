@@ -19,6 +19,8 @@ services:
   nginx:
     image: nginx:1.27-alpine
     container_name: nginx
+    depends_on:
+      - php
     volumes:
       - .:/var/www/html:ro
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
@@ -31,6 +33,8 @@ services:
   php:
     build:
       context: ./.docker/php/
+    depends_on:
+      - database
     container_name: php
     environment:
       - TYPO3_CONTEXT=Development

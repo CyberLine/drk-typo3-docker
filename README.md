@@ -15,4 +15,9 @@ Ergänzungsrepository, um die DRK Musterseiten unter Docker entwickeln zu könne
   ```bash
   docker compose up -d
   ```
+- Datenbank anlegen und importieren:
+  ```bash
+  docker exec -i database mysql -u root -e "CREATE DATABASE IF NOT EXISTS typo3"
+  docker exec -i database mysql typo3 -u root < ov-muster-dump.sql
+  ```
 - Im Browser http://127.0.0.1 aufrufen
